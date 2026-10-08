@@ -1,0 +1,573 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif;background:#F2F5F1}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>다니 이유식 기록장</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+
+/* 레이아웃: 한 줄 머리말 + 고정 탭 + 탭별 단일 컬럼. 캘린더는 7열 그리드, 날짜를 누르면 아래에 하루 상세 */
+:root{
+  --bg:#F2F5F1; --sf:#FFFFFF; --sf2:#E8EEE8; --ink:#1E2A24; --mu:#5A6B62; --ln:#D3DDD6;
+  --ac:#B8661F; --al:#BF3B28; --ok:#2E7656; --hd:#22342B; --hdt:#F2F5F1;
+  --p1:#C9930F; --p2:#3F8F5E; --p3:#25808C; --p4:#4767AE; --p5:#8752A6; --p6:#A9532F;
+  --f-disp:"Gowun Batang","Nanum Myeongjo",serif;
+  --f-body:"IBM Plex Sans KR","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121915; --sf:#1A231E; --sf2:#222D27; --ink:#E4EDE7; --mu:#9AB0A3; --ln:#2F3C35;
+  --ac:#E59A52; --al:#F08068; --ok:#6CC69C; --hd:#0B110E; --hdt:#E4EDE7;
+  --p1:#E2B23A; --p2:#5DB27E; --p3:#4BB0BC; --p4:#7C99DE; --p5:#B285D0; --p6:#D9805B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121915; --sf:#1A231E; --sf2:#222D27; --ink:#E4EDE7; --mu:#9AB0A3; --ln:#2F3C35;
+  --ac:#E59A52; --al:#F08068; --ok:#6CC69C; --hd:#0B110E; --hdt:#E4EDE7;
+  --p1:#E2B23A; --p2:#5DB27E; --p3:#4BB0BC; --p4:#7C99DE; --p5:#B285D0; --p6:#D9805B; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 14.5px/1.65 var(--f-body);font-variant-numeric:tabular-nums}
+.w{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+h1{font:700 27px/1.25 var(--f-disp);margin:0;text-wrap:balance}
+h2{font:700 19px/1.35 var(--f-disp);margin:26px 0 8px;text-wrap:balance}
+h3{font-size:15px;margin:14px 0 4px}
+.sub{color:var(--mu);font-size:13px;margin:4px 0 0}
+.tabs{display:flex;gap:6px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 0;margin-top:10px;overflow-x:auto}
+button,select{font:700 13.5px var(--f-body);padding:8px 13px;border-radius:8px;border:1px solid var(--ln);background:var(--sf);color:var(--ink);cursor:pointer;white-space:nowrap}
+button.on{background:var(--hd);color:var(--hdt);border-color:var(--hd)}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.sec[hidden]{display:none}
+.box{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:12px 16px;margin:10px 0}
+.box.al{border-color:var(--al)}
+.box p{margin:4px 0}
+ul{margin:4px 0;padding-left:20px}li{margin:2px 0}
+.note{font-size:12.5px;color:var(--mu)}
+.wrap{overflow-x:auto;border:1px solid var(--ln);border-radius:10px;background:var(--sf);margin:8px 0}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:13px}
+th{background:var(--hd);color:var(--hdt);text-align:left;padding:8px 10px;font-weight:700;white-space:nowrap}
+td{padding:8px 10px;border-top:1px solid var(--ln);vertical-align:top}
+td.k{font-weight:700;white-space:nowrap}
+td.lo{color:var(--al);font-weight:700}
+td.c{text-align:center}
+.pill{display:inline-block;color:#fff;border-radius:99px;padding:0 9px;font-size:11.5px;font-weight:700;line-height:20px;background:var(--pc)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:14px 0}
+.tile{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 14px}
+.tile b{display:block;font:700 24px/1.2 var(--f-disp)}
+.tile span{font-size:12.5px;color:var(--mu)}
+.panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px}
+.who{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:12px 16px;min-width:0}
+.who h3{margin:0 0 4px;font-size:14.5px}
+.who .role{font-size:12px;color:var(--mu);margin:0 0 6px}
+.me{border:2px solid var(--ac)}
+/* 캘린더 */
+.mn{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px}
+.mn button{padding:6px 10px;font-size:12.5px}
+.lg{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin:6px 0;color:var(--mu)}
+.lg span{display:inline-flex;align-items:center;gap:5px}
+.lg span:before{content:"";width:10px;height:10px;border-radius:3px;background:var(--pc)}
+.g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.g .wh{text-align:center;font-size:12px;color:var(--mu);font-weight:700}
+.g .em{min-height:64px}
+.c{min-height:66px;padding:4px 4px 4px 6px;text-align:left;border:1px solid var(--ln);border-left:4px solid var(--pc);border-radius:6px;font:500 10.5px/1.25 var(--f-body);display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden;white-space:normal}
+.c .dn{font-size:12.5px;font-weight:700}
+.c .dn.h{color:var(--al)}
+.c .nw{color:var(--ok);font-weight:700;word-break:keep-all}
+.c .nw.al{color:var(--al)}
+.c .nw.cont{opacity:.65;font-weight:500}
+.c .sm{color:var(--mu)}
+.c .ck{color:var(--ok);font-weight:700}
+.c.sel{outline:3px solid var(--ac);outline-offset:-1px}
+.c.out{opacity:.35;cursor:default}
+/* 하루 상세 */
+.day{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:12px 14px;margin:8px 0}
+.dh{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:14px}
+.dh .hol{color:var(--al);font-size:12px;font-weight:700}
+.ms{color:var(--ac);font-weight:700;margin:6px 0 2px}
+.tr{font-weight:700;margin:6px 0 2px;color:var(--ok)}
+.tr.al{color:var(--al)}
+.pr{font-size:12.5px;color:var(--al);margin:2px 0}
+.ml{margin:8px 0 2px;padding-top:6px;border-top:1px dashed var(--ln)}
+.ml .t{font-weight:700}
+.ml .ad{font-size:12.5px;margin-top:2px}
+.ml .ad .a{color:var(--al);font-weight:700}
+.n{color:var(--ok);font-weight:700}
+.ft{color:var(--mu);font-size:12.5px;margin-top:8px}
+.rc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0;font-size:13px}
+.rc input[type=number]{width:86px;padding:6px 8px;border:1px solid var(--ln);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.rc input[type=checkbox]{width:20px;height:20px;accent-color:var(--ok)}
+.rc label{display:flex;gap:6px;align-items:center;font-weight:700}
+.rc select{font-weight:500;padding:6px 8px}
+.st{font-size:12px;font-weight:700;color:var(--ok)}
+details{margin:8px 0}
+summary{font-weight:700;cursor:pointer;padding:10px 12px;background:var(--sf);border:1px solid var(--ln);border-radius:8px}
+details[open] summary{border-color:var(--ink)}
+.plan .day .rc{display:none}
+#bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+#sm{font-weight:700}
+.wkg td{text-align:center}.wkg td:first-child{text-align:left}
+@media (max-width:560px){.c{min-height:58px;font-size:9.5px;padding:3px}.c .sm{display:none}h1{font-size:23px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* ---- 기록장 전용 ---- */
+.top{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;justify-content:space-between}
+.who-am{font-size:12.5px;color:var(--mu)}
+.gate{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:20px;margin:16px 0;max-width:560px}
+.gate h2{margin-top:0}
+.gate input[type=text]{width:100%;padding:9px 10px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;margin:6px 0 10px}
+.nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.nav .dl{font:700 16px var(--f-disp);min-width:0}
+.xc{font-size:13px}
+.xt{width:100%;padding:7px 9px;border:1px solid var(--ac);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit;margin-top:4px}
+.wn{color:var(--al);font-size:12.5px;font-weight:700;margin-top:3px}
+.chg{color:var(--ac);font-weight:700}
+.daybox textarea{width:100%;min-height:56px;padding:7px 9px;border:1px solid var(--ln);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.daybox .rc input[type=number]{width:96px}
+.by{font-size:12px;color:var(--mu);margin-top:6px}
+.hist{display:grid;gap:8px}
+.hi{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 14px}
+.hi .h{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-weight:700}
+.tag{font-size:11.5px;border-radius:99px;padding:0 8px;line-height:20px;border:1px solid var(--ln)}
+.tag.r{color:var(--al);border-color:var(--al)}
+.tag.c{color:var(--ac);border-color:var(--ac)}
+.mrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0;border-top:1px solid var(--ln)}
+.mrow:first-child{border-top:0}
+.mrow .nm{font-weight:700;min-width:120px}
+.mrow .st2{font-size:12.5px;color:var(--mu)}
+.empty{color:var(--mu);font-size:13px;padding:6px 0}
+.c .ck .x{color:var(--ac)}
+.c .ck .r{color:var(--al)}
+</style>
+
+<div class="w">
+<header class="top">
+  <div><h1>다니 이유식 기록장</h1>
+  <p class="sub">2026.10.19 시작 · 하루하루 먹인 것과 반응을 함께 기록해요</p></div>
+  <span class="who-am"><span id="me"></span> · <a href="plan.html">1년 플랜 보기</a> <button id="logout" hidden>로그아웃</button></span>
+</header>
+
+<div id="gate" class="gate"><h2>불러오는 중…</h2><p class="note">잠시만 기다려 주세요.</p></div>
+
+<div id="app" hidden>
+<nav class="tabs" role="tablist">
+  <button data-t="td" class="on">하루 기록</button>
+  <button data-t="ca">캘린더</button>
+  <button data-t="hs">기록 모아보기</button>
+  <button data-t="mg" id="mgTab" hidden>가족 승인</button>
+</nav>
+
+<section id="td" class="sec">
+  <div class="nav"><button id="prev" aria-label="전날">◀</button><span class="dl" id="dl"></span><button id="next" aria-label="다음날">▶</button><button id="today">오늘</button></div>
+  <div id="dayv"></div>
+</section>
+
+<section id="ca" class="sec" hidden>
+  <div class="mn" id="mn"></div>
+  <div class="lg"><span style="--pc:var(--ok)">✔ 다 먹임 · ◐ 일부</span><span style="--pc:var(--ac)">✎ 재료 바꿈</span><span style="--pc:var(--al)">! 반응 있음</span></div>
+  <div id="cg"></div>
+  <p class="note">날짜를 누르면 그날 기록 화면으로 가요.</p>
+</section>
+
+<section id="hs" class="sec" hidden>
+  <div class="nav"><button id="csv">기록 CSV 저장</button><label class="xc"><input type="checkbox" id="onlyx"> 재료 바꾼 날·반응 있는 날만</label></div>
+  <p class="note" id="csvm"></p>
+  <div id="hl" class="hist"></div>
+</section>
+
+<section id="mg" class="sec" hidden>
+  <div class="box"><b>승인한 사람만 들어올 수 있어요.</b><ul>
+    <li>가족에게 이 페이지 주소를 보내 주세요. 가족이 구글 계정으로 로그인하고 "승인 요청"을 보내면 아래에 나타나요.</li>
+    <li>가족의 구글 이메일을 알고 있으면 아래에서 바로 추가해도 돼요. 그 사람은 로그인하면 바로 들어올 수 있어요.</li>
+    <li>승인 목록에 없는 사람은 서버(Firebase 보안 규칙)에서 기록을 읽거나 쓸 수 없어요. 승인 해제하면 바로 막혀요.</li>
+  </ul>
+  <div class="rc"><label for="addEmail">이메일로 추가</label><input type="email" id="addEmail" placeholder="example@gmail.com" style="padding:7px 9px;border:1px solid var(--ln);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit;min-width:0;flex:1 1 200px"><input type="text" id="addRel" maxlength="20" placeholder="관계(예: 아빠)" style="padding:7px 9px;border:1px solid var(--ln);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit;width:120px"><select id="addRole"><option value="record">기록까지</option><option value="view">보기만</option></select><button id="addBtn">추가</button></div><div id="addMsg" class="note"></div></div>
+  <h2>승인 요청</h2><div id="rq" class="box"></div>
+  <h2>승인된 가족</h2><div id="mb" class="box"></div>
+</section>
+</div>
+</div>
+
+<script>
+/* ---------- 날짜 도구 ---------- */
+function D(s){return new Date(s+'T00:00:00')}
+function add(d,n){return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n)}
+function ds(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function md(d){return (d.getMonth()+1)+'/'+d.getDate()}
+var WK=['일','월','화','수','목','금','토'];
+var S=D('2026-10-19'),E=D('2027-10-18');
+function dn(d){return Math.round((d-S)/864e5)}
+function ageM(d){var m=(d.getFullYear()-2026)*12+d.getMonth()-3;if(d.getDate()<19)m--;return m}
+
+/* ---------- 단계 ---------- */
+var PH=[['2026-10-19','초기','--p1'],['2026-11-19','중기 1','--p2'],['2026-12-19','중기 2','--p3'],['2027-01-19','후기','--p4'],['2027-04-19','완료기','--p5'],['2027-07-19','유아식 이행','--p6']];
+function phi(d){var i=0;PH.forEach(function(p,k){if(d>=D(p[0]))i=k});return i}
+function pick(a,d){var r=a[0];a.forEach(function(x){if(d>=D(x[0]))r=x});return r}
+var TX=[['2026-10-19','10배 미음 · 체에 곱게','미음'],['2026-10-26','10배죽 · 곱게 간 질감','죽'],['2026-11-02','8배죽 · 으깬 질감','죽'],['2026-11-19','7배죽 · 토핑 2~3mm 다짐 + 하루 1번 무른 스틱(찐 단호박·고구마) 쥐어주기','죽'],['2026-12-19','6배죽 · 토핑 3~5mm + 손가락 길이 무른 스틱','죽'],['2027-01-19','5배죽 · 5~7mm 덩어리 + 핑거푸드','죽'],['2027-02-19','4배죽 · 7mm 덩어리 + 핑거푸드','죽'],['2027-03-19','진밥 · 7~10mm, 손으로 집어먹기','진밥'],['2027-04-19','진밥 · 1cm 부드러운 반찬, 숟가락 연습','진밥'],['2027-05-19','무른밥 · 잇몸으로 으깨지는 반찬','무른밥'],['2027-07-19','밥(조금 질게) · 저염 유아 반찬, 숟가락·포크','밥']];
+var SU=[['2026-10-19','분유 하루 800~1,000mL'],['2026-11-19','분유 하루 700~800mL'],['2026-12-19','분유 하루 600~800mL'],['2027-01-19','분유 하루 500~700mL']];
+var HOL={'2026-12-25':'성탄절','2027-01-01':'신정','2027-02-06':'설 연휴','2027-02-07':'설날','2027-02-08':'설 연휴','2027-02-09':'대체공휴일','2027-03-01':'삼일절','2027-04-19':'다니 돌','2027-05-05':'어린이날','2027-05-13':'부처님오신날','2027-06-06':'현충일','2027-07-17':'제헌절','2027-07-19':'대체공휴일','2027-08-15':'광복절','2027-08-16':'대체공휴일','2027-09-14':'추석 연휴','2027-09-15':'추석','2027-09-16':'추석 연휴','2027-10-03':'개천절','2027-10-04':'대체공휴일','2027-10-09':'한글날','2027-10-11':'대체공휴일'};
+var MS={'2026-10-19':'첫 이유식! 쌀미음 1작은술부터. 수유는 평소대로',
+'2026-10-22':'첫 소고기. 오늘부터 매일 철분',
+'2026-11-02':'하루 2회 시작(2회차는 20g부터)',
+'2026-11-19':'7개월 · 중기 1단계, 7배죽',
+'2026-12-19':'8개월 · 하루 3회 시작(3회차 30g부터) · 소고기 하루 2끼',
+'2027-01-19':'9개월 · 후기 시작 · 핑거푸드 · 영유아검진 3차 기간 시작(~4/18)',
+'2027-02-19':'10개월 · 오후 간식 1회 추가',
+'2027-03-19':'11개월 · 진밥으로 전환',
+'2027-04-19':'돌 축하해요! 완료기 · 간식 2회 · 이번 주는 새 알레르기 식품 쉬어요 · 돌 진료 때 빈혈(혈색소·페리틴)과 비타민D 확인',
+'2027-05-19':'13개월 · 무른밥',
+'2027-07-19':'15개월 · 유아식 이행 · 젖병 끊기 마무리',
+'2027-10-18':'18개월 · 1년 플랜 완주! 영유아검진 4차(18~24개월) 예약'};
+
+/* ---------- 재료 순서 ---------- */
+function I(n,t,o){var x=o||{};x.n=n;x.t=t;return x}
+function A(n,fam,kind,dz,mt,o){var x=o||{};x.n=n;x.t='a';x.al=1;x.fam=fam;x.kind=kind;x.dz=dz;x.mt=mt;return x}
+var NUT=['⅛작은술','¼작은술','½작은술'],PRO=['1작은술','2작은술','15g'],PRO2=['1작은술','2작은술','10g'];
+var L=[
+I('쌀','g',{note:'불린 쌀을 곱게 갈아 10배 미음'}),
+I('소고기','p',{note:'우둔·안심 등 기름 적은 부위, 핏물 빼고 곱게. 철분의 핵심'}),
+I('애호박','v',{c:'g'}),
+I('단호박','v',{c:'o'}),
+I('브로콜리','v',{c:'g',note:'꽃송이 부분만'}),
+A('달걀노른자','egg','add',['⅛개','¼개','½개'],'½개',{note:'완숙 노른자만 으깨서',dn:'완숙 노른자'}),
+I('감자','v',{c:'w'}),
+I('양배추','v',{c:'g',note:'심 제거한 잎'}),
+A('땅콩','pea','add',['¼작은술','½작은술','1작은술'],'2작은술',{note:'무가당 100% 땅콩버터를 따뜻한 물·죽에 묽게. 통땅콩·덩어리 금지. 유지량 2작은술×주 3회 ≈ 땅콩 단백 주 6g',dn:'묽게 푼 땅콩버터'}),
+I('닭고기','p',{note:'안심, 힘줄 제거'}),
+I('당근','v',{c:'o'}),
+A('달걀(흰자 포함)','egg','add',['⅛개','¼개','½개'],'½개',{note:'노른자 통과 후 전란 완숙. 국내 영아 알레르기 1위라 일찍, 꾸준히',dn:'완숙 달걀'}),
+I('고구마','v',{c:'o'}),
+I('청경채','v',{c:'g',note:'잎 부분'}),
+A('플레인요거트(소젖)','dairy','add',['½작은술','1작은술','1큰술'],'2~3큰술',{note:'산양 분유를 먹어도 소젖 단백은 처음이에요(교차반응 흔함). 무가당 플레인, 더 천천히 시작. 우유를 음료로 주는 건 돌 이후',dn:'플레인요거트'}),
+I('시금치','v',{c:'g',note:'질산염: 데친 물 버리고 만든 날만'}),
+I('사과','f',{note:'익혀서 곱게'}),
+A('흰살생선(대구)','fish','pro',PRO,null,{note:'대구살, 가시 완전히 제거하고 익혀서',dn:'대구'}),
+I('콜리플라워','v',{c:'w'}),
+I('배','f',{note:'익혀서'}),
+A('두부(대두)','soy','pro',PRO,null,{note:'연두부 데쳐 으깨서',dn:'두부'}),
+I('무','v',{c:'w'}),
+I('돼지고기','p',{note:'안심, 기름 제거'}),
+A('밀(무염 국수)','wheat','add',['3~4가닥','1큰술','2큰술'],'3큰술',{note:'무염 아기국수나 밀가루를 죽에 풀어 익혀서. 일반 소면은 나트륨이 많아 피해요',dn:'무염 국수'}),
+I('오트밀','g',{after:'밀(무염 국수)',note:'밀 통과 뒤 시작(밀 혼입 가능성). 곱게 갈아서'}),
+I('양파','v',{c:'w'}),
+A('참깨','ses','add',NUT,'1작은술',{note:'곱게 간 깨나 무가당 참깨페이스트(타히니). 통깨 금지',dn:'참깨페이스트'}),
+I('바나나','f'),
+I('들깨가루','a',{kind:'add',dz:['¼작은술','½작은술','½작은술'],note:'거피 들깨가루. 지방·에너지 보충'}),
+I('미역','v',{c:'g',dn:'불린 미역',note:'불린 미역 10g까지, 잘게. 요오드 때문에 주 2회(화·토)만'}),
+A('새우','shell','pro',PRO2,null,{note:'완전히 익혀 곱게 다짐. 갑각류 첫 노출',opt:1}),
+I('토마토','v',{c:'o',note:'익혀서 껍질·씨 제거'}),
+I('보리','g',{note:'곱게 갈아 섞어'}),
+A('호두','nut','add',NUT,'1작은술',{note:'곱게 간 가루. 통·조각 금지(질식)',dn:'간 호두'}),
+I('아보카도','f',{note:'잘 익은 것 으깨서. 좋은 지방'}),
+I('연어','p',{fam:'fish',kind:'pro',note:'생선 통과 뒤. 껍질·가시 제거, 완전히 익혀서(DHA)'}),
+A('캐슈넛','nut','add',NUT,'1작은술',{note:'곱게 간 가루. 국내 영아에게 늘고 있는 견과 알레르기',dn:'간 캐슈넛'}),
+I('파프리카','v',{c:'o',note:'껍질 제거'}),
+I('양송이','v',{c:'w'}),
+A('고등어','fish','pro',PRO,null,{note:'국내 표시 대상. 아주 신선한 것만(히스타민), 가시 제거, 완전히 익혀서'}),
+I('완두콩','v',{c:'g',note:'껍질 벗겨 으깨기'}),
+I('아기치즈','a',{fam:'dairy',kind:'add',dz:['¼장','½장','½장'],mt:'½장',note:'저염 아기치즈, 하루 1장 이하'}),
+A('게','shell','pro',PRO2,null,{note:'꽃게살 익혀 곱게',opt:1}),
+I('차조','g'),
+I('블루베리','f',{note:'반드시 으깨거나 4등분(통째는 질식 위험)'}),
+A('아몬드','nut','add',NUT,'1작은술',{note:'곱게 간 가루',dn:'간 아몬드'}),
+I('배추','v',{c:'g'}),
+I('퀴노아','g',{note:'여러 번 헹궈서'}),
+A('바지락','mol','pro',PRO2,null,{note:'해감 후 완전히 익혀 곱게 다짐. 조개류 첫 노출'}),
+I('표고버섯','v',{c:'w'}),
+I('귤','f',{note:'속껍질·씨 제거'}),
+A('키위','kiwi','fruit',['1작은술','2작은술','15g'],'15g',{note:'잘 익은 것. 입 주변이 잠깐 붉어지는 건 산 자극인 경우가 많지만 꼭 기록'}),
+I('오이','v',{c:'g'}),
+I('수수','g'),
+A('잣','nut','add',NUT,'1작은술',{note:'곱게 간 가루(잣죽). 통잣 금지',dn:'간 잣'}),
+I('김','a',{kind:'add',dz:['¼장','½장','½장'],note:'무조미 김만. 요오드 때문에 한 번에 ½장, 주 2회(월·목)만. 입천장에 붙지 않게 잘게 부숴 죽에 섞기'}),
+I('딸기','f',{note:'꼭지 떼고 으깨서. 입 주변 붉어짐이 흔해요'}),
+I('렌틸콩','g',{note:'철분·단백질이 많은 콩. 푹 삶아 으깨서 섞기'}),
+I('숙주','v',{c:'w',note:'잘게 다져서'}),
+I('망고','f',{note:'껍질 가까운 과육은 피하기'}),
+I('연근','v',{c:'w',note:'푹 익혀 잘게'}),
+I('가자미','p',{fam:'fish',kind:'pro',note:'가시 제거'}),
+A('생우유','dairy','milk',['50mL','100mL','150mL'],null,{nb:'2027-04-23',noM:1,note:'일반(전지)우유. 분유에 섞거나 컵으로. 1~2주에 걸쳐 분유를 줄이고 하루 400~500mL로'}),
+I('수박','f',{nb:'2027-05-10',note:'씨 제거'}),
+I('부추','v',{c:'g',note:'잘게'}),
+A('오징어','mol','pro',PRO2,null,{note:'질겨서 곱게 다지거나 갈아서'}),
+I('체리','f',{nb:'2027-05-10',note:'씨 빼고 4등분'}),
+I('옥수수','g',{note:'알갱이째는 질식 위험, 갈아서'}),
+A('메밀','buck','add',['3~4가닥','1큰술','2큰술'],'1큰술',{note:'심한 반응이 잘 나는 식품이라 소아과 상담 후. 메밀 함량 높은 국수를 삶아 잘게',opt:1,dn:'삶은 메밀국수'}),
+I('자두','f',{nb:'2027-06-01',note:'껍질 벗겨서'}),
+I('오리고기','p',{note:'껍질·기름 제거'}),
+A('복숭아','peach','fruit',['1작은술','2작은술','15g'],'15g',{nb:'2027-07-05',note:'제철(7~8월)에 시작. 껍질 벗겨서'})
+];
+var BEEF=L[1];
+
+/* ---------- 3일 슬롯 배치: 알레르기 첫날은 평일·비연휴, 알레르기끼리 붙지 않게 ---------- */
+function badAl(d){var w=d.getDay();if(w<1||w>3)return true;if(HOL[ds(d)]||HOL[ds(add(d,1))]||HOL[ds(add(d,2))])return true;if(d>=D('2027-04-16')&&d<=D('2027-04-22'))return true;return false}
+(function(){var q=L.slice(),cur=new Date(S),lastAl=false,guard=0;
+ while(q.length&&guard++<2000){
+  var el=function(x){if(x.nb&&cur<D(x.nb))return false;if(x.after){var a=L.filter(function(y){return y.n==x.after})[0];if(!a.start||cur<add(a.start,3))return false}return true};
+  var i=q.findIndex(el);if(i<0){cur=add(cur,1);continue}
+  var it=q[i];
+  if(it.al&&(badAl(cur)||lastAl)){var j=q.findIndex(function(x){return !x.al&&el(x)});if(j>=0)i=j;else if(lastAl){lastAl=false;cur=add(cur,1);continue}else{cur=add(cur,1);continue}}
+  it=q.splice(i,1)[0];it.start=new Date(cur);lastAl=!!it.al;cur=add(cur,3)}
+})();
+var TRI={};L.forEach(function(x){if(!x.start)return;for(var k=0;k<3;k++)TRI[dn(add(x.start,k))]={it:x,k:k}});
+var MILK=L.filter(function(x){return x.n=='생우유'})[0];
+if(MILK.start)MS[ds(MILK.start)]=(MS[ds(MILK.start)]?MS[ds(MILK.start)]+' · ':'')+'생우유 시작(분유와 섞어서)';
+function passed(x,d){return x.start&&d>=add(x.start,3)}
+
+/* ---------- 끼니 계산 ---------- */
+var FAMD={egg:[1,3,5],pea:[2,4,6],dairy:[1,4,6],soy:[2,0],fish:[3,6],wheat:[4,0],ses:[1,5],shell:[4],nut:[3,6],mol:[5],kiwi:[0],buck:[4],peach:[1]};
+var FN={egg:'달걀',pea:'땅콩',dairy:'유제품',soy:'대두',fish:'생선',wheat:'밀',ses:'참깨',shell:'갑각류',nut:'견과',mol:'조개·오징어',kiwi:'키위',buck:'메밀',peach:'복숭아'};
+var FT={egg:3,pea:3,dairy:3,soy:2,fish:2,wheat:2,ses:2,shell:1,nut:2,mol:1,kiwi:1,buck:1,peach:1};
+var FO=['egg','pea','dairy','soy','fish','wheat','ses','nut','shell','mol'];
+var PG=[10,15,20,20,25,25],PG2=[10,15,15,15,15,15],SEA={'딸기':[12,1,2,3,4,5],'귤':[11,12,1,2,3],'수박':[5,6,7,8],'체리':[5,6,7,8],'자두':[6,7,8],'복숭아':[7,8,9]},VG=[10,10,15,15,20,25],DG=[10,10,15,15,0,0];
+var AMS=[[['2026-10-22',25],['2026-10-25',35],['2026-11-01',50],['2026-11-18',75],['2026-12-18',90],['2027-01-18',105],['2027-03-18',120],['2027-04-18',130],['2027-07-18',150],['2027-10-18',160]],
+ [['2026-11-02',20],['2026-11-18',50],['2026-12-18',90],['2027-01-18',105],['2027-03-18',120],['2027-04-18',130],['2027-07-18',150],['2027-10-18',160]],
+ [['2026-12-19',30],['2027-01-18',90],['2027-03-18',120],['2027-04-18',130],['2027-07-18',150],['2027-10-18',160]]];
+function amt(m,d){var a=AMS[m];if(d<=D(a[0][0]))return a[0][1];for(var i=1;i<a.length;i++){var p=D(a[i-1][0]),q=D(a[i][0]);if(d<=q){var t=(d-p)/(q-p);return Math.round((a[i-1][1]+(a[i][1]-a[i-1][1])*t)/5)*5}}return a[a.length-1][1]}
+var SNR=['고구마 찐 것 30g','바나나 ½개(길게 잘라)','단호박 찐 것 30g','감자 찐 것 30g','두부 부침 20g(무염)','무설탕 오트밀 바나나 팬케이크 1장','찐 브로콜리·당근 스틱'];
+var CACHE={};
+function info(d){var key=ds(d);if(CACHE[key])return CACHE[key];
+ var n=dn(d),w=d.getDay(),pi=phi(d),T0=TRI[n]||null,tr=T0?T0.it:null,tk=T0?T0.k:0;
+ var P=L.filter(function(x){return passed(x,d)}),has=function(nm){return P.some(function(x){return x.n==nm})};
+ var mc=d<D('2026-11-02')?1:d<D('2026-12-19')?2:3;
+ var TMS=mc==1?['09:00']:mc==2?['09:00','17:00']:pi<4?['09:00','13:00','18:00']:['08:30','12:30','17:30'];
+ var beefOK=has('소고기'),beefTr=tr===BEEF;
+ var G=P.filter(function(x){return x.t=='g'&&x.n!='쌀'});
+ var PR=P.filter(function(x){return x.t=='p'&&!x.fam&&x!==BEEF});
+ var VP={g:[],o:[],w:[]};P.filter(function(x){return x.t=='v'}).forEach(function(x){if(x.n=='미역'&&(w!=2&&w!=6||(tr&&tr.n=='김')))return;VP[x.c].push(x)});
+ var VA=VP.g.concat(VP.o,VP.w),F=P.filter(function(x){return x.t=='f'&&(!SEA[x.n]||SEA[x.n].indexOf(d.getMonth()+1)>=0)});
+ var due=[];Object.keys(FAMD).forEach(function(f){if(FAMD[f].indexOf(w)<0)return;if(tr&&tr.fam==f)return;if(f=='peach'&&(d.getMonth()<6||d.getMonth()>8))return;
+  var mem=P.filter(function(x){return x.fam==f&&!x.noM&&!(tr&&tr.al&&d<add(x.start,17))});if(!mem.length)return;var fresh=mem.filter(function(x){return d<add(x.start,17)});due.push(f=='egg'?mem[mem.length-1]:fresh.length?fresh[fresh.length-1]:mem[Math.floor(n/7)%mem.length])});
+ var snackOn=d>=D('2027-02-19');
+ var meals=[];for(var m=0;m<mc;m++)meals.push({t:TMS[m],T:n<3?[5,10,15][n]:amt(m,d),pro:[],veg:[],add:[],des:null});
+ var trH=function(m){return !!tr&&(m==0||(m==1&&tk>0&&(tr.t=='g'||tr.t=='v'||tr.t=='f')))};
+ var beefMoved=false;
+ if(n>=3){if(tr&&tr.t=='p'&&tr!==BEEF){meals[0].pro.push({it:tr,nw:1});beefMoved=beefOK}else if(beefOK||beefTr)meals[0].pro.push({it:BEEF,nw:beefTr?1:0})}
+ var proQ=due.filter(function(x){return x.kind=='pro'}),addQ=due.filter(function(x){return x.kind=='add'}),fruQ=due.filter(function(x){return x.kind=='fruit'});
+ for(m=1;m<mc;m++){var M=meals[m];
+  if(beefMoved){M.pro.push({it:BEEF});beefMoved=false;continue}
+  if(tr&&tr.al&&m<mc-1){if(proQ.length&&pi>=2&&beefOK)M.pro.push({it:BEEF});else if(PR.length)M.pro.push({it:PR[(n+m)%PR.length]});else if(beefOK)M.pro.push({it:BEEF});continue}
+  if(tr&&tr.al&&m==mc-1&&proQ.length){M.pro.push({it:proQ.shift()});continue}
+  if(pi>=2&&m==2&&beefOK&&!(proQ.length&&meals[1].pro.some(function(q){return q.it===BEEF}))){M.pro.push({it:BEEF});continue}
+  if(proQ.length){M.pro.push({it:proQ.shift()});continue}
+  if(PR.length)M.pro.push({it:PR[(n+m)%PR.length]});else if(beefOK)M.pro.push({it:BEEF})}
+ proQ.forEach(function(x){var t=null;meals.forEach(function(M){if(M.pro.some(function(q){return q.it!==BEEF}))t=M});t=t||meals[mc-1];if(t.pro.some(function(q){return q.nw}))return;t.pro.forEach(function(q){if(q.it!==BEEF)q.half=1});t.pro.push({it:x,half:1})});
+ if(tr&&tr.kind&&tr.dz&&tr.kind!='milk'){if(tr.kind=='fruit')meals[0].des={it:tr,lab:tr.dz[tk],nw:1};else meals[0].add.push({it:tr,lab:tr.dz[tk],nw:1})}
+ meals.forEach(function(M,m){if(n<3)return;
+  var nv=pi==0?(n<6?0:d<D('2026-11-02')?1:2):(pi==3&&m==0)?3:2;if(M.T<30)nv=0;else if(M.T<50)nv=Math.min(nv,1);
+  var want=nv==0?[]:nv==1?[n%2?'o':'g']:nv==2?['g',(n+m)%2?'o':'w']:['g','o','w'],vv=[];
+  if(tr&&tr.t=='v'&&trH(m)){vv.push({it:tr,nw:1});var wi=want.indexOf(tr.c);if(wi>=0)want.splice(wi,1);else want.pop()}
+  want.forEach(function(c,j){var pool=VP[c].length?VP[c]:VA;for(var z=0;z<pool.length;z++){var x=pool[(n*2+m*3+j+z)%pool.length];if(!vv.some(function(v){return v.it===x})){vv.push({it:x});break}}});
+  M.veg=vv;
+  if(tr&&tr.t=='f'&&trH(m))M.des={it:tr,nw:1}});
+ var snackAdds=[],st=(tr&&tr.al&&mc>1)?mc-1:0,mlab=function(x){return x.dz&&d<add(x.start,10)?x.dz[2]+'(첫 1주는 시험 마지막 양)':x.mt};
+ addQ.forEach(function(x){if(snackOn&&x.fam=='dairy'){snackAdds.push(x);return}
+  var b=-1;for(var m=st;m<mc;m++){if(b<0||meals[m].add.length<meals[b].add.length)b=m}meals[b].add.push({it:x,lab:mlab(x)})});
+ if(has('들깨가루')&&n%2==0)meals[mc-1].add.push({it:L.filter(function(x){return x.n=='들깨가루'})[0],lab:'½작은술'});
+ if(has('김')&&(w==1||w==4))meals[0].add.push({it:L.filter(function(x){return x.n=='김'})[0],lab:'½장(부숴서)'});
+ meals.forEach(function(M,m){M.oil=(d>=D('2027-01-19')?'기름 ½작은술':(d>=D('2026-11-19')&&m==0)?'올리브유 ½작은술':'')+(d>=D('2027-04-19')&&m==0?' · 철 강화 유아 시리얼 2큰술':'')});
+ if(!snackOn&&n>=3&&F.length&&!meals[mc-1].des)meals[mc-1].des={it:F[n%F.length]};
+ meals.forEach(function(M,m){var pg=PG[pi],vg=VG[pi];
+  M.pro.forEach(function(p){var g=p.it===BEEF?pg:PG2[pi];if(p.it.dz&&p.it.kind=='pro'&&d<add(p.it.start,10))g=Math.min(g,parseInt(p.it.dz[2])||g);p.g=p.half?Math.max(5,Math.round(g/2/5)*5):g});
+  M.veg.forEach(function(v){v.g=v.it.n=='미역'?Math.min(vg,10):vg});
+  if(M.des&&!M.des.lab)M.des.g=DG[pi]||10;
+  var sum=function(){return M.pro.reduce(function(a,p){return a+p.g},0)+M.veg.reduce(function(a,v){return a+v.g},0)+(M.des&&M.des.g||0)};
+  var minB=Math.ceil(M.T*(pi==0?0.5:0.45)/5)*5,guard=0;
+  while(M.T-sum()<minB&&guard++<40){var v=M.veg.filter(function(v){return v.g>5})[0];if(v){v.g-=5;continue}if(M.des&&M.des.g>5){M.des.g-=5;continue}var p=M.pro.filter(function(p){return p.g>5})[0];if(p){p.g-=5;continue}break}
+  M.bg=M.T-sum();
+  var noRice=m==1&&d>=D('2027-01-19')&&G.length>=1&&!(tr&&tr.t=='g'&&trH(m));
+  M.gn=n<3?'쌀':(tr&&tr.t=='g'&&trH(m))?'쌀+🆕'+tr.n:noRice?(G.length>1?G[n%G.length].n+'·'+G[(n+1)%G.length].n:G[0].n)+'(쌀 없이)':G.length?'쌀·'+G[(n+m)%G.length].n:'쌀'});
+ var SN=[],fr=F.length?F[(n+1)%F.length]:null,milkOK=MILK.start&&d>=add(MILK.start,3);
+ if(snackOn){var extra=fruQ.map(function(x){return{it:x,lab:mlab(x)}}).concat(snackAdds.map(function(x){return{it:x,lab:mlab(x)}}));
+  if(pi<4)SN.push({t:'15:00',items:(fr?[{it:fr,lab:'30g'+(fr.n=='사과'||fr.n=='배'?'(익히거나 갈아서)':'')}]:[]).concat(extra)});
+  else{SN.push({t:'10:30',items:[{txt:milkOK?'우유 100mL(컵)':'물(컵)'}].concat(fr?[{it:fr,lab:'30~50g'+(fr.n=='사과'||fr.n=='배'?'(익히거나 갈아서)':'')}]:[])});SN.push({t:'15:30',items:[{txt:SNR[n%SNR.length]}].concat(extra)})}}
+ else if(fruQ.length){fruQ.forEach(function(x){meals[mc-1].add.push({it:x,lab:mlab(x)})})}
+ var su;if(d<D('2027-04-19'))su=pick(SU,d)[1];else if(!MILK.start||d<MILK.start)su='분유 하루 500~600mL';else if(d<add(MILK.start,14))su='분유→생우유 전환 중(섞어서 분유를 조금씩 줄이기)';else su=pi<5?'일반(전지)우유 하루 400~500mL(500mL 넘기지 않기)·컵으로':'일반(전지)우유 하루 400~500mL·컵으로, 젖병 없이';
+ var r={n:n,w:w,pi:pi,mc:mc,meals:meals,SN:SN,tr:tr,tk:tk,su:su,tx:pick(TX,d),ms:MS[key]||'',hol:HOL[key]||'',age:ageM(d)};
+ CACHE[key]=r;return r}
+
+
+
+/* ================= 기록장 ================= */
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var $=function(i){return document.getElementById(i)};
+var A={db:null,user:null,uid:null,owner:false,ok:false,role:'',REC:{},MEM:{},REQ:{},names:{},cur:null,unsub:[]};
+function clampDay(t){t=new Date(t.getFullYear(),t.getMonth(),t.getDate());return t<S?new Date(S):t>E?new Date(E):t}
+A.cur=clampDay(new Date());
+var MONS=[];for(var y=2026,mo=9;y<2027||mo<=9;){MONS.push([y,mo]);mo++;if(mo>11){mo=0;y++}}
+/* 바꾼 재료 글에서 찾을 낱말. 한 글자 재료는 다른 낱말과 헷갈리지 않게 따로 정했어요 */
+var KEYS={'게':['게','꽃게','게살','대게','킹크랩'],'배':['배','배즙','배숙'],'김':['김','김가루','김자반','구운김'],'무':['무','무나물','무국'],
+ '밀(무염 국수)':['밀가루','통밀','국수','소면','우동','빵','파스타'],'달걀(흰자 포함)':['달걀','계란','흰자','전란'],'달걀노른자':['노른자','달걀','계란'],
+ '두부(대두)':['두부','두유','콩물','대두'],'흰살생선(대구)':['대구','흰살생선','동태','명태'],'플레인요거트(소젖)':['요거트','요구르트'],'생우유':['우유'],
+ '참깨':['참깨','깨소금','통깨','참기름','타히니'],'아기치즈':['치즈'],'땅콩':['땅콩'],'새우':['새우'],'호두':['호두'],'잣':['잣']};
+var NAMEIDX=L.map(function(x){return{it:x,keys:KEYS[x.n]||[x.n.replace(/\(.*\)/,'')].concat(x.dn?[x.dn]:[])}});
+
+/* 계획 → 끼니 목록(기록 단위) */
+function slots(p){var r=[];p.meals.forEach(function(M,i){r.push({k:String(i+1),title:(i+1)+'회 '+M.t,total:M.T,plan:planText(M,p)})});
+ p.SN.forEach(function(s,i){r.push({k:'s'+(i+1),title:'간식 '+s.t,total:null,plan:s.items.map(function(x){return x.txt?x.txt:(x.it.dn||x.it.n)+' '+x.lab}).join(' + ')})});return r}
+function planText(M,p){var a=[M.gn+' '+p.tx[2]+' '+M.bg+'g'];M.pro.concat(M.veg).forEach(function(x){a.push((x.nw?'🆕':'')+(x.it.dn||x.it.n)+' '+x.g+'g')});
+ if(M.des)a.push('후식 '+(M.des.it.dn||M.des.it.n)+' '+(M.des.lab||M.des.g+'g'));M.add.forEach(function(x){a.push((x.nw?'🆕':'')+(x.it.dn||x.it.n)+' '+x.lab)});if(M.oil)a.push(M.oil);return a.join(' + ')}
+/* 바꾼 재료에 아직 시험 전인 재료가 있는지 */
+function risky(text,d){var p=info(d),out=[];if(!text)return out;
+ NAMEIDX.forEach(function(e){if(e.it===p.tr)return;if(passed(e.it,d))return;var tok=text.split(/[s+,·/()d~.]+|g|mL/).filter(Boolean);if(e.keys.some(function(k){return tok.some(function(t){return t===k||(k.length>=2&&t.indexOf(k)>=0)})}))out.push(e.it)});
+ return out.filter(function(x,i,a){return a.indexOf(x)==i})}
+function rec(k){return A.REC[k]||{meals:{},r:'',memo:'',milk:null}}
+var RX=['','반응 없음','입 주변 붉어짐','발진·두드러기','구토·설사','진료 받음'];
+var canW=function(){return A.ok&&(A.owner||A.role=='record')};
+
+/* ---------- 하루 화면 ---------- */
+function dayView(){var d=A.cur,k=ds(d),p=info(d),R=rec(k),ph=PH[p.pi],dis=canW()?'':' disabled';
+ $('dl').textContent=md(d)+'('+WK[p.w]+')';
+ var t=new Date();t=new Date(t.getFullYear(),t.getMonth(),t.getDate());
+ var h='<div class="day daybox"><div class="dh"><span class="pill" style="--pc:var('+ph[2]+')">'+ph[1]+'</span><span>생후 '+p.age+'개월 · '+(p.n+1)+'일째 · 하루 '+p.mc+'회</span>'+(p.hol?'<span class="hol">'+esc(p.hol)+'</span>':'')+'</div>';
+ if(t<S)h+='<div class="ms">시작 전이에요(D-'+dn(t)*-1+'). 시작일 계획을 미리 볼 수 있어요.</div>';
+ if(p.ms)h+='<div class="ms">★ '+esc(p.ms)+'</div>';
+ if(p.tr){var al=!!p.tr.al;h+='<div class="tr'+(al?' al':'')+'">'+(al?'⚠ 알레르기 식품 ':'🆕 새 재료 ')+esc(p.tr.n)+' ('+(p.tk+1)+'/3일차'+(p.tr.dz?' · '+p.tr.dz[p.tk]:'')+')</div>';
+  if(p.tr.note)h+='<div class="note">'+esc(p.tr.note)+'</div>';
+  if(al&&p.tk==0)h+='<div class="pr">오전 첫 끼 · 집에서 · 스푼 끝 한 입 → 10분 대기 → 나머지 → 2시간 관찰</div>'}
+ slots(p).forEach(function(s){var m=R.meals[s.k]||{},id=k+'-'+s.k,warn=risky(m.x,d);
+  h+='<div class="ml"><span class="t">'+s.title+'</span>'+(s.total?' · 계획 '+s.total+'g':'')+'<br><span'+(m.x?' style="text-decoration:line-through;opacity:.6"':'')+'>'+esc(s.plan)+'</span>'+
+  '<div class="rc"><label><input type="checkbox" class="fd" id="fd-'+id+'" data-m="'+s.k+'"'+(m.f?' checked':'')+dis+'> 먹였어요</label>'+
+  (s.total?'<input type="number" class="am" id="am-'+id+'" inputmode="numeric" min="0" step="5" placeholder="먹은 양" aria-label="'+s.title+' 먹은 양(g)" data-m="'+s.k+'" value="'+(m.a==null?'':m.a)+'"'+dis+'><span>g</span>':'')+
+  '<label class="xc"><input type="checkbox" class="xo" id="xo-'+id+'" data-m="'+s.k+'"'+(m.x!=null?' checked':'')+dis+'> 계획과 다른 재료를 먹였어요</label></div>'+
+  (m.x!=null?'<input type="text" class="xt" id="xt-'+id+'" data-m="'+s.k+'" value="'+esc(m.x)+'" placeholder="실제로 먹인 재료와 양" aria-label="'+s.title+' 실제 먹인 재료"'+dis+'>':'')+
+  (warn.length?'<div class="wn">⚠ 아직 시험 전인 재료가 있어요: '+warn.map(function(x){return esc(x.n)}).join(', ')+'. 알레르기 식품이면 3일 시험 절차를 먼저 거쳐 주세요.</div>':'')+'</div>'});
+ h+='<div class="ml"><div class="rc"><label for="mk-'+k+'">분유·우유 하루 총량</label><input type="number" id="mk-'+k+'" class="mk" inputmode="numeric" min="0" step="10" placeholder="mL" value="'+(R.milk==null?'':R.milk)+'"'+dis+'><span>mL</span><span class="note">권장 '+esc(p.su)+'</span></div>'+
+ '<div class="rc"><label for="rx-'+k+'">오늘 반응</label><select class="rx" id="rx-'+k+'"'+dis+'>'+RX.map(function(o){return'<option value="'+o+'"'+(R.r==o?' selected':'')+'>'+(o||'기록 안 함')+'</option>'}).join('')+'</select></div>'+
+ '<label for="mm-'+k+'" class="note">메모(컨디션, 거부한 재료, 변·잠 등)</label><textarea id="mm-'+k+'" class="mm"'+dis+'>'+esc(R.memo||'')+'</textarea></div>';
+ h+='<div class="ft">'+esc(p.tx[1])+'</div>';
+ if(R.by)h+='<div class="by">마지막 기록: '+esc(A.names[R.by]||'가족')+(R.upd?' · '+new Date(R.upd).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'')+'</div>';
+ if(!canW())h+='<div class="note">보기 전용이에요. 기록하려면 엄마에게 기록 권한을 요청하세요.</div>';
+ $('dayv').innerHTML=h+'</div>';resolveNames([R.by])}
+function go(n){A.cur=clampDay(add(A.cur,n));dayView()}
+$('prev').onclick=function(){go(-1)};$('next').onclick=function(){go(1)};$('today').onclick=function(){A.cur=clampDay(new Date());dayView()};
+
+/* 저장 */
+function save(k,v){if(!canW()||!A.db)return;v.by=A.uid;v.upd=Date.now();A.REC[k]=v;
+ A.db.collection('feed').doc(k).set({meals:v.meals,r:v.r||'',memo:v.memo||'',milk:v.milk==null?null:v.milk,by:v.by,upd:v.upd}).catch(function(e){alertBar('저장하지 못했어요('+(e&&e.code||'오류')+'). 권한이 있는지 확인해 주세요.')})}
+function alertBar(t){var g=$('csvm');if(g)g.textContent=t;var b=document.querySelector('#dayv .day');if(b){var n=document.createElement('div');n.className='wn';n.textContent=t;b.appendChild(n)}}
+document.addEventListener('change',function(e){var t=e.target;if(!t.closest||!t.closest('#dayv'))return;var k=ds(A.cur),v=JSON.parse(JSON.stringify(rec(k))),m=t.getAttribute('data-m');
+ if(m&&!v.meals[m])v.meals[m]={};
+ if(t.classList.contains('fd'))v.meals[m].f=t.checked?1:0;
+ else if(t.classList.contains('am')){var a=t.value===''?null:Math.max(0,+t.value);v.meals[m].a=a;if(a>0)v.meals[m].f=1}
+ else if(t.classList.contains('xo')){if(t.checked){var s=slots(info(A.cur)).filter(function(x){return x.k==m})[0];v.meals[m].x=s?s.plan:''}else delete v.meals[m].x}
+ else if(t.classList.contains('xt')){v.meals[m].x=t.value;v.meals[m].f=1}
+ else if(t.classList.contains('mk'))v.milk=t.value===''?null:Math.max(0,+t.value);
+ else if(t.classList.contains('rx'))v.r=t.value;
+ else if(t.classList.contains('mm'))v.memo=t.value.slice(0,1000);
+ else return;
+ save(k,v);if(t.classList.contains('xo')||t.classList.contains('xt'))dayView()});
+
+/* ---------- 캘린더 ---------- */
+function mark(k){var p=PLAN_MC[k],R=A.REC[k];if(!R)return'';var c=0,x=false;for(var m in R.meals){if(R.meals[m].f&&/^\d$/.test(m))c++;if(R.meals[m].x!=null)x=true}
+ return(c==0?'':c>=p?'✔':'◐')+(x?'<span class="x">✎</span>':'')+(R.r&&R.r!='반응 없음'?'<span class="r">!</span>':'')}
+var PLAN_MC={};for(var dd=new Date(S);dd<=E;dd=add(dd,1))PLAN_MC[ds(dd)]=info(dd).mc;
+var calI=0;
+function month(i){calI=i;$('mn').innerHTML=MONS.map(function(x,k){return'<button data-mi="'+k+'" class="'+(k==i?'on':'')+'">'+(x[0]==2027&&(x[1]==0||k==0)?'2027 ':'')+(x[1]+1)+'월</button>'}).join('');
+ document.querySelectorAll('[data-mi]').forEach(function(b){b.onclick=function(){month(+b.getAttribute('data-mi'))}});
+ var y=MONS[i][0],m=MONS[i][1],f=new Date(y,m,1),Ld=new Date(y,m+1,0).getDate(),h='<div class="g">'+['월','화','수','목','금','토','일'].map(function(x){return'<div class="wh">'+x+'</div>'}).join('');
+ for(var j=0;j<(f.getDay()+6)%7;j++)h+='<div class="em"></div>';
+ for(var x=1;x<=Ld;x++){var d=new Date(y,m,x);if(d<S||d>E){h+='<div class="c out" style="--pc:var(--ln)"><span class="dn">'+x+'</span></div>';continue}
+  var p=info(d),k=ds(d),al=p.tr&&p.tr.al;
+  h+='<button class="c'+(k==ds(A.cur)?' sel':'')+'" data-d="'+k+'" style="--pc:var('+PH[p.pi][2]+')"><span class="dn'+(p.hol||p.w==0?' h':'')+'">'+x+'</span>'+(p.tr?'<span class="nw'+(al?' al':'')+(p.tk?' cont':'')+'">'+(p.tk==0?(al?'⚠':'🆕'):'')+esc(p.tr.n.replace(/\(.*\)/,''))+'</span>':'')+'<span class="ck">'+mark(k)+'</span></button>'}
+ $('cg').innerHTML=h+'</div>';
+ document.querySelectorAll('#cg .c[data-d]').forEach(function(b){b.onclick=function(){A.cur=D(b.getAttribute('data-d'));tab('td');dayView()}})}
+
+/* ---------- 모아보기 ---------- */
+function hist(){var only=$('onlyx').checked,ks=Object.keys(A.REC).sort().reverse(),h='';
+ ks.forEach(function(k){var R=A.REC[k],d=D(k);if(d<S||d>E)return;var p=info(d),sl=slots(p),fed=0,eat=0,xs=[];
+  sl.forEach(function(s){var m=R.meals[s.k]||{};if(m.f)fed++;if(m.a>0)eat+=m.a;if(m.x!=null)xs.push(s.title+': '+m.x)});
+  var bad=R.r&&R.r!='반응 없음';if(only&&!xs.length&&!bad)return;
+  h+='<div class="hi"><div class="h"><a href="#" data-go="'+k+'">'+md(d)+'('+WK[p.w]+')</a><span class="note">'+PH[p.pi][1]+(p.tr?' · '+esc(p.tr.n)+' '+(p.tk+1)+'/3':'')+'</span>'+(bad?'<span class="tag r">'+esc(R.r)+'</span>':'')+(xs.length?'<span class="tag c">재료 바꿈</span>':'')+'</div>'+
+  '<div>먹인 끼니 '+fed+'/'+sl.length+(eat?' · 먹은 양 '+eat+'g':'')+(R.milk?' · 분유·우유 '+R.milk+'mL':'')+'</div>'+
+  xs.map(function(x){return'<div class="chg">✎ '+esc(x)+'</div>'}).join('')+(R.memo?'<div class="note">'+esc(R.memo)+'</div>':'')+(R.by?'<div class="by">'+esc(A.names[R.by]||'가족')+'</div>':'')+'</div>'});
+ $('hl').innerHTML=h||'<div class="empty">아직 기록이 없어요. "하루 기록"에서 먹였어요를 누르면 여기에 쌓여요.</div>';
+ document.querySelectorAll('[data-go]').forEach(function(a){a.onclick=function(e){e.preventDefault();A.cur=D(a.getAttribute('data-go'));tab('td');dayView()}});
+ resolveNames(ks.map(function(k){return A.REC[k].by}))}
+$('onlyx').onchange=hist;
+$('csv').onclick=async function(){var q=function(s){s=String(s==null?'':s);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+ var rows=['날짜,끼니,계획 총량(g),먹임,먹은 양(g),계획 재료,실제 먹인 재료(변경 시),반응,분유·우유(mL),메모'];
+ for(var d=new Date(S);d<=E;d=add(d,1)){var k=ds(d),R=A.REC[k];if(!R)continue;slots(info(d)).forEach(function(s,i){var m=R.meals[s.k]||{};rows.push([k,s.title,s.total||'',m.f?'O':'',m.a==null?'':m.a,s.plan,m.x==null?'':m.x,i==0?R.r||'':'',i==0&&R.milk!=null?R.milk:'',i==0?R.memo||'':''].map(q).join(','))})}
+ var bl=new Blob(['\ufeff'+rows.join('\n')],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(bl),ln=document.createElement('a');ln.href=u;ln.download='dani-feeding-record.csv';document.body.appendChild(ln);ln.click();ln.remove();setTimeout(function(){URL.revokeObjectURL(u)},2000);$('csvm').textContent='CSV 파일을 내려받았어요.'};
+
+/* ---------- 가족 승인 ---------- */
+async function resolveNames(ids){ids=(ids||[]).filter(function(x){return x&&!A.names[x]});if(!ids.length||!A.user)return;
+ try{var ps=await A.user.profiles(ids);ids.forEach(function(id){var p=ps&&ps[id];A.names[id]=(p&&p.name)||'가족'})}catch(e){ids.forEach(function(id){A.names[id]='가족'})}
+ var on=document.querySelector('.tabs .on'),t=on?on.getAttribute('data-t'):'';if(t=='td'&&!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#dayv')))dayView();else if(t=='hs')hist()}
+function mgView(){if(!A.owner)return;window.__danimem=Object.assign({},A.REQ,A.MEM);var rq=Object.keys(A.REQ),mb=Object.keys(A.MEM).filter(function(id){return A.MEM[id].status=='approved'});
+ resolveNames(rq.concat(mb)).then(function(){
+ $('rq').innerHTML=rq.length?rq.map(function(id){var r=A.REQ[id];return'<div class="mrow"><span class="nm">'+esc(A.names[id]||'이름 없음')+'</span><span class="st2">'+esc(r.rel||'')+' · '+new Date(r.at||0).toLocaleDateString('ko-KR')+'</span><button data-ap="'+id+'" data-role="record">기록까지 승인</button><button data-ap="'+id+'" data-role="view">보기만 승인</button><button data-rj="'+id+'">거절</button></div>'}).join(''):'<div class="empty">새 요청이 없어요.</div>';
+ $('mb').innerHTML=mb.length?mb.map(function(id){var m=A.MEM[id];return'<div class="mrow"><span class="nm">'+esc(A.names[id]||'이름 없음')+'</span><span class="st2">'+(m.role=='record'?'기록 가능':'보기만')+(m.rel?' · '+esc(m.rel):'')+'</span><button data-rv="'+id+'">승인 해제</button></div>'}).join(''):'<div class="empty">아직 승인한 사람이 없어요. 엄마(소유자)는 항상 접근할 수 있어요.</div>';
+ document.querySelectorAll('[data-ap]').forEach(function(b){b.onclick=function(){var id=b.getAttribute('data-ap'),r=A.REQ[id]||{};
+  A.db.collection('members').doc(id).set({status:'approved',role:b.getAttribute('data-role'),rel:r.rel||'',name:r.name||'',at:Date.now()}).then(function(){return A.db.collection('requests').doc(id).delete()}).catch(function(e){$('rq').insertAdjacentHTML('beforeend','<div class="wn">처리하지 못했어요('+esc(e&&e.code||'오류')+')</div>')})}});
+ $('addBtn').onclick=function(){var em=($('addEmail').value||'').trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){$('addMsg').textContent='이메일 주소를 확인해 주세요.';return}
+  A.db.collection('members').doc(em).set({status:'approved',role:$('addRole').value,rel:($('addRel').value||'').slice(0,20),name:'',at:Date.now()}).then(function(){$('addMsg').textContent=em+' 님을 추가했어요.';$('addEmail').value='';$('addRel').value=''}).catch(function(e){$('addMsg').textContent='추가하지 못했어요('+(e&&e.code||'오류')+')'})};
+ document.querySelectorAll('[data-rj]').forEach(function(b){b.onclick=function(){A.db.collection('requests').doc(b.getAttribute('data-rj')).delete()}});
+ document.querySelectorAll('[data-rv]').forEach(function(b){b.onclick=function(){var id=b.getAttribute('data-rv');A.db.collection('members').doc(id).delete()}})})}
+
+/* ---------- 탭·게이트 ---------- */
+function tab(id){document.querySelectorAll('[data-t]').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-t')==id)});document.querySelectorAll('.sec').forEach(function(s){s.hidden=s.id!=id});
+ if(id=='ca')month(MONS.findIndex(function(x){return x[0]==A.cur.getFullYear()&&x[1]==A.cur.getMonth()}));if(id=='hs')hist();if(id=='mg')mgView();if(id=='td')dayView()}
+document.querySelectorAll('[data-t]').forEach(function(b){b.onclick=function(){tab(b.getAttribute('data-t'))}});
+function gate(html){$('gate').hidden=false;$('app').hidden=true;$('gate').innerHTML=html}
+function openApp(){$('gate').hidden=true;$('app').hidden=false;$('mgTab').hidden=!A.owner;
+ $('me').textContent=(A.owner?'엄마(소유자)':A.role=='record'?'기록 가능':'보기만')+(A.myName?' · '+A.myName:'');
+ var cur=document.querySelector('.tabs .on');tab(cur?cur.getAttribute('data-t'):'td')}
+function refresh(){var on=document.querySelector('.tabs .on'),t=on?on.getAttribute('data-t'):'td';
+ if(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#dayv')&&t=='td')return;tab(t)}
+function evaluate(){var m=A.MEM[A.uid];var was=A.ok;
+ A.ok=A.owner||(m&&m.status=='approved');A.role=A.owner?'record':(m&&m.status=='approved'?m.role:'');
+ if(A.ok){if(!was)startFeed();openApp();return}
+ stopFeed();
+ var pending=A.sentReq;
+ gate('<h2>가족 승인이 필요해요</h2><p>다니 엄마가 승인한 사람만 이 기록장을 볼 수 있어요.</p><p class="note">로그인한 계정: '+esc(A.uid)+'</p>'+
+  (pending?'<p class="ms">승인 요청을 보냈어요. 엄마가 승인하면 이 화면이 자동으로 열려요.</p>':
+  '<label for="rel" class="note">다니와의 관계(예: 아빠, 할머니)</label><input type="text" id="rel" maxlength="20"><button id="ask">승인 요청 보내기</button>')+
+  (m&&m.status=='revoked'?'<p class="note">이전 승인이 해제됐어요. 다시 요청할 수 있어요.</p>':''));
+ var b=$('ask');if(b)b.onclick=function(){var rel=($('rel').value||'').slice(0,20);
+  A.db.collection('requests').doc(A.uid).set({rel:rel,at:Date.now(),name:(A.myName||'').slice(0,40)}).then(function(){A.sentReq=true;evaluate()}).catch(function(e){
+   gate('<h2>요청을 보낼 수 없어요</h2><p>잠시 후 다시 시도해 주세요. 계속 안 되면 엄마에게 이메일로 직접 추가해 달라고 하세요.</p><p class="note">오류 코드: '+esc(e&&e.code||'알 수 없음')+'</p>')})}}
+function startFeed(){var u=A.db.collection('feed').onSnapshot(function(s){A.REC={};s.docs.forEach(function(x){var v=x.data()||{};A.REC[x.id]={meals:v.meals||{},r:v.r||'',memo:v.memo||'',milk:v.milk==null?null:v.milk,by:v.by||'',upd:v.upd||0}});refresh()},function(e){alertBar('기록을 불러오지 못했어요('+(e&&e.code||'오류')+')')});A.unsub.push(u)}
+function stopFeed(){A.unsub.forEach(function(f){try{f()}catch(e){}});A.unsub=[];A.REC={}}
+
+window.bootApp=function(db,user,owner,uid,name){stopFeed();A.db=db;A.user=user;A.owner=owner;A.uid=uid;A.myName=name||'';A.ok=false;A.sentReq=false;A.MEM={};A.REQ={};
+ if(A.owner){evaluate();
+  A.db.collection('requests').onSnapshot(function(s){A.REQ={};s.docs.forEach(function(x){A.REQ[x.id]=x.data()||{}});window.__danimem=Object.assign({},A.REQ,A.MEM);if(!$('mg').hidden)mgView();$('mgTab').textContent='가족 승인'+(s.docs.length?' ('+s.docs.length+')':'')},function(){});
+  A.db.collection('members').onSnapshot(function(s){A.MEM={};s.docs.forEach(function(x){A.MEM[x.id]=x.data()||{}});window.__danimem=Object.assign({},A.REQ,A.MEM);if(!$('mg').hidden)mgView()},function(){});
+  return}
+ A.db.collection('members').onSnapshot(function(s){A.MEM={};s.docs.forEach(function(x){A.MEM[x.id]=x.data()||{}});evaluate()},
+  function(e){gate('<h2>기록장을 불러오지 못했어요</h2><p>잠시 후 다시 열어 주세요.</p><p class="note">오류 코드: '+esc(e&&e.code||'알 수 없음')+'</p>')});
+};
+window.appGate=gate;
+</script>
+<script src="config.js"></script>
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,onAuthStateChanged,signOut} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {getFirestore,doc,setDoc,deleteDoc,onSnapshot,collection} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const C=window.DANI_CONFIG||{};
+const ready=C.firebase&&C.firebase.apiKey&&String(C.firebase.apiKey).indexOf('여기에')<0&&String(C.ownerEmail||'').indexOf('@')>0;
+if(!ready){
+  window.appGate('<h2>설정이 필요해요</h2><p>config.js에 Firebase 설정과 엄마 이메일을 넣어 주세요. 방법은 README.md에 있어요.</p>');
+}else{
+  const app=initializeApp(C.firebase),auth=getAuth(app),fdb=getFirestore(app);
+  const OWNER=String(C.ownerEmail).trim().toLowerCase();
+  const wrap=s=>({docs:s.docs?s.docs.map(d=>({id:d.id,data:()=>d.data()})):(s.exists()?[{id:s.id,data:()=>s.data()}]:[])});
+  // 기록장 코드가 쓰는 모양(collection/doc/onSnapshot)으로 Firestore를 감싸요
+  const mkDb=(me,owner)=>({collection:name=>({
+    doc:id=>({set:v=>setDoc(doc(fdb,name,id),v),delete:()=>deleteDoc(doc(fdb,name,id))}),
+    // 가족은 승인 목록 전체가 아니라 자기 문서만 읽을 수 있어요
+    onSnapshot:(cb,err)=>name==='members'&&!owner
+      ?onSnapshot(doc(fdb,'members',me),s=>cb(wrap(s)),err)
+      :onSnapshot(collection(fdb,name),s=>cb(wrap(s)),err)})});
+  const nameOf=id=>{const m=(window.__danimem&&window.__danimem[id])||{};return m.name||(id?String(id).split('@')[0]:'가족')};
+  const login=()=>{
+    window.appGate('<h2>다니 이유식 기록장</h2><p>엄마가 승인한 가족만 들어올 수 있어요. 구글 계정으로 로그인해 주세요.</p><button id="gl">구글 계정으로 로그인</button><p class="note" id="glm"></p>');
+    document.getElementById('gl').onclick=async()=>{const p=new GoogleAuthProvider();
+      try{await signInWithPopup(auth,p)}catch(e){
+        if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment'))return signInWithRedirect(auth,p);
+        document.getElementById('glm').textContent='로그인하지 못했어요('+(e&&e.code||'오류')+')'}}};
+  document.getElementById('logout').onclick=()=>signOut(auth);
+  onAuthStateChanged(auth,u=>{const lo=document.getElementById('logout');
+    if(!u){lo.hidden=true;login();return}
+    lo.hidden=false;
+    const me=String(u.email||'').toLowerCase(),owner=me===OWNER;
+    const user={profiles:async ids=>{const o={};ids.forEach(i=>{o[i]={name:i===me?(u.displayName||nameOf(i)):nameOf(i)}});return o}};
+    window.bootApp(mkDb(me,owner),user,owner,me,u.displayName||'');
+  });
+}
+
+</script>
+</body></html>

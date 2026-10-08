@@ -1,0 +1,41 @@
+rules_version = '2';
+// 다니 이유식 기록장 보안 규칙
+// OWNER_EMAIL 자리에 엄마의 구글 이메일(소문자)을 넣고 Firebase 콘솔 → Firestore → 규칙에 붙여 넣어 게시하세요.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
+    function me() { return request.auth.token.email.lower(); }
+    function isOwner() { return signedIn() && me() == 'OWNER_EMAIL'; }
+    function memberPath() { return /databases/$(database)/documents/members/$(me()); }
+    function isMember() { return signedIn() && exists(memberPath()); }
+    function canRead() { return isOwner() || isMember(); }
+    function canWrite() { return isOwner() || (isMember() && get(memberPath()).data.role == 'record'); }
+
+    // 날짜별 기록: 승인된 사람만 읽고, '기록까지' 승인된 사람만 써요. 작성자는 본인 이메일이어야 해요.
+    match /feed/{day} {
+      allow read: if canRead();
+      allow create, update: if canWrite()
+        && request.resource.data.keys().hasOnly(['meals', 'r', 'memo', 'milk', 'by', 'upd'])
+        && request.resource.data.by == me();
+      allow delete: if isOwner();
+    }
+
+    // 승인 목록: 엄마만 바꿀 수 있어요. 가족은 자기 문서만 읽어요.
+    match /members/{email} {
+      allow read: if isOwner() || (signedIn() && email == me());
+      allow write: if isOwner();
+    }
+
+    // 승인 요청: 로그인한 사람이 자기 이메일로만 보낼 수 있고, 목록은 엄마만 봐요.
+    match /requests/{email} {
+      allow read, delete: if isOwner();
+      allow create, update: if signedIn() && email == me()
+        && request.resource.data.keys().hasOnly(['rel', 'at', 'name']);
+    }
+
+    // 그 밖의 경로는 모두 막아요.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
