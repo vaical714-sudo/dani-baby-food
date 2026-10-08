@@ -1,11 +1,11 @@
 rules_version = '2';
 // 다니 이유식 기록장 보안 규칙
-// OWNER_EMAIL 자리에 엄마의 구글 이메일(소문자)을 넣고 Firebase 콘솔 → Firestore → 규칙에 붙여 넣어 게시하세요.
+// 소유자: vaical714@gmail.com. 바꾸려면 아래 이메일과 config.js의 ownerEmail을 함께 바꾸고, Firebase 콘솔 → Firestore → 규칙에 다시 게시하세요.
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
     function me() { return request.auth.token.email.lower(); }
-    function isOwner() { return signedIn() && me() == 'OWNER_EMAIL'; }
+    function isOwner() { return signedIn() && me() == 'vaical714@gmail.com'; }
     function memberPath() { return /databases/$(database)/documents/members/$(me()); }
     function isMember() { return signedIn() && exists(memberPath()); }
     function canRead() { return isOwner() || isMember(); }
